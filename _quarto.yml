@@ -1,0 +1,27 @@
+project: 
+  render: 
+   - "*.qmd"
+   - "!kladd/"
+  type: book 
+
+book: 
+  title: "Mappeeksamen"
+  author: "kandidatnummer"
+  date: "2024-11-22"
+  chapters: 
+    - index.qmd
+    - 01-reliability.qmd
+    - 03-stat-inf.qmd
+    - 05-repeated-measurements.qmd
+    - references.qmd
+    
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo 
+  pdf:
+    documentclass: scrreprt
+
+
+

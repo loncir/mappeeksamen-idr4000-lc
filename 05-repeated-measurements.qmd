@@ -1,0 +1,394 @@
+---
+title: "Effects of resistance training volume on lean body mass and maximal strength"
+editor_options: 
+  chunk_output_type: console
+---
+
+## Introduction
+
+Resistance training is a general term referring to exercise requiring one to exert force against a resistance [@kraemer2017]. By using resistance, whether from weights or body weight, resistance training helps improve muscle strength, endurance, and power. Resistance training have therefore become a fundamental element in fitness and rehabilitation due to it's variety of health benefits, as it enhances physical performance and improves overall quality of life. Such benefits are valuable across many fields, from sports to general health and longevity. Investigating the effects of resistance training is therefore of significant interest for understanding how it can best be used to optimize the effect of its wide-ranging health benefits. Different variables in resistance training, such as volume, may affect the outcome, making it essential to examine how specific training protocols contribute to muscular strength and body composition.
+
+## Methods
+
+### Participants
+
+The study included 34 participants between the ages of 18 and 40. To be eligible for the study one had to meat specific health criteria and be a non-smoker. People were excluded if they had any sensitivity to local anesthetics, had participated in resistance training more than once a week in the previous year, had limitations in muscle strength due to injury, or were taking medications that could interfere with training outcomes[@hammarström2020]. Of the 34 participants, Participants are described in @tbl-participants. Overall, the male participants are older, taller and heavier than the female participants.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: tbl-participants 
+#| tbl-cap: "Participant characteristics"
+
+
+
+library(tidyverse); library(exscidata);
+library(gt)
+
+exscidata::dxadata %>%
+  filter(time == "pre",
+         include == "incl") %>%
+  select(participant, sex, age, height, weight) %>%
+  pivot_longer(names_to = "variable",
+               values_to = "value",
+               cols = age:weight) %>%
+  summarise(.by = c(sex, variable),
+            m = mean(value),
+            s = sd(value),
+            n = n()) %>%
+  
+  mutate(sex = if_else(sex == "male",
+                       "Male", "Female"),
+         sex = paste0(sex, " n = ", n),
+         stat = paste0(round(m, 1),
+                       " (",
+                       round(s, 1),
+                       ")")) %>%
+  dplyr::select(sex, variable, stat) %>%
+  pivot_wider(names_from = variable,
+              values_from = stat) %>%
+  gt() %>%
+  cols_label(sex = "",
+             age = "Age (years)",
+             weight = "Body mass (kg)",
+             height = "Stature (cm)") %>%
+  tab_source_note(
+    source_note = "Number of participants are indicated by n. Data are means and standard deviations (SD)."
+  )
+
+```
+
+### Study overview
+
+#### Training protocol
+
+#### Assessment of body composition
+
+#### Muscle strength and hypertrophy assesments
+
+### Data analysis
+
+t.test
+
+## Results
+
+### Higher training volume results in greater regional hypertrophy
+
+```{r}
+#| label: "Load packages and data"
+#| warning: false
+#| message: false
+#| echo: false
+#| output: false
+
+
+
+
+library(tidyverse); library(exscidata)
+library(lme4)
+
+
+
+leanmass <- dxadata %>%
+  select(participant:include, lean.left_leg, lean.right_leg) %>%
+  pivot_longer(names_to = "leg", 
+               values_to = "lean.mass", 
+               cols = lean.left_leg:lean.right_leg) %>%
+  mutate(leg = if_else(leg == "lean.left_leg", "L", "R"), 
+         sets = if_else(multiple == leg, "multiple", "single")) %>%
+  select(participant, time, sex, include, sets, leg, lean.mass) %>%
+  filter(include == "incl") %>%
+ 
+  mutate(time = factor(time, levels = c("pre", "post")), 
+         sets = factor(sets, levels = c("single", "multiple")), 
+         leg = paste0(participant, leg)) %>%
+  
+  print()
+
+
+leanmass_change_wide <- leanmass %>%
+  pivot_wider(names_from = time, values_from = lean.mass) %>%
+  mutate(change = post - pre) %>%
+  
+  select(participant, sex, sets, change) %>%
+  pivot_wider(names_from = sets, 
+              values_from = change) %>%
+  
+  mutate(diff = multiple - single) %>%
+  
+  print()
+
+
+leanmass_change_wide_time <- leanmass %>%
+  pivot_wider(names_from = time, values_from = lean.mass) %>%
+
+  select(participant, sex, sets, pre, post) %>%
+  
+  print()
+
+
+tt1 <- with(leanmass_change_wide, t.test(multiple, single, paired = TRUE)) %>%
+  print()
+
+str(tt1)
+
+pval <- round(tt1$p.value, 3)
+
+tval <- round(tt1$statistic, 2)
+
+df <- tt1$parameter
+
+cil <- round(tt1$conf.int[1], 1)
+ciu <- sprintf("%.1f", round(tt1$conf.int[2], 1))
+
+estimate <- round(tt1$estimate, 1) 
+
+lean.mass.results <- paste0(estimate,
+                             " (95% CI: [",
+                            cil,
+                            ", ",
+                            ciu,
+                            "], *p*-value = ",
+                            pval,
+                            ", t<sub>",
+                            df, "</sub> = ",
+                            tval,")")
+
+```
+
+The mean difference in regional lean body mass change between sets conditions was `r lean.mass.results`.
+
+```{r}
+#| echo: false 
+#| message: false
+#| warning: false
+#| label: tbl-change-leanmass 
+#| tbl-cap: "Mean lean mass change by sex"
+    
+library(dplyr)
+library(gt)
+
+leanmass_mean_by_sex <- leanmass_change_wide %>%
+  group_by(sex) %>%
+  summarise(
+    mean_single = mean(single, na.rm = TRUE),
+    mean_multiple = mean(multiple, na.rm = TRUE),
+    mean_diff = mean(diff, na.rm = TRUE)) %>%
+  mutate(sex = if_else(sex == "female", "Female", "Male"))
+
+leanmass_mean_by_sex %>%
+  gt() %>%
+  cols_label(
+    sex = "Sex",
+    mean_single = "Mean single set change",
+    mean_multiple = "Mean multiple set change",
+    mean_diff = "Mean difference (multiple - single)") %>%
+
+  fmt_number(
+    columns = c(mean_single, mean_multiple, mean_diff),
+    decimals = 2) %>%
+  cols_align(
+    align = "center",
+    columns = everything()) %>%
+  tab_source_note(
+    source_note = "Data is in grams (g)") 
+```
+
+Comment on @tbl-change-leanmass.
+
+```{r}
+#| echo: false 
+#| message: false
+#| warning: false
+#| label: fig-lean-body-mass 
+#| fig-cap: "Mean lean body mass changes from pre- to post-intervention in male and female participants"
+
+leanmass_change_wide1 <- leanmass %>%
+  pivot_wider(names_from = time, values_from = lean.mass) %>%
+  mutate(change = post - pre) %>%
+  select(participant, sex, sets, change) %>%
+  pivot_wider(names_from = sets, values_from = change) %>%
+  mutate(diff = multiple - single) %>%
+  pivot_longer(cols = single:multiple, names_to = "sets", values_to = "change") 
+
+
+leanmass_summary <- leanmass_change_wide1 %>%
+  group_by(sex, sets) %>%
+  summarise(
+    mean_change = mean(change, na.rm = TRUE),
+    se_change = sd(change, na.rm = TRUE) / sqrt(n()),
+    .groups = 'drop') %>%
+  mutate(sex = if_else(sex == "female", "Female", "Male"),
+         sets = if_else(sets == "multiple", "Multiple", "Single"))
+
+
+ggplot(leanmass_summary, aes(x = sets, y = mean_change, fill = sex)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.7), width = 0.6) +
+  geom_errorbar(aes(ymin = mean_change - se_change, ymax = mean_change + se_change),
+                width = 0.2, position = position_dodge(width = 0.7)) +
+  labs(
+    x = "Sets",
+    y = "Mean Change in Lean Body Mass (g)",
+    fill = "Sex"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "top"
+  )
+
+```
+
+Comment on @fig-lean-body-mass.
+
+### Higher training volume results in greater muscular strength
+
+```{r}
+#| echo: false 
+#| message: false
+#| warning: false
+#| output: false
+
+strengthvolume %>%
+  distinct(exercise)
+ 
+ 
+ 
+
+ 
+str <- strengthvolume %>%
+  filter(include == "incl") %>%
+  mutate(time = factor(time, levels = c("pre", "session1", 
+                                        "week2", "week5", 
+                                        "week9", "post"))) 
+
+ 
+
+  
+ 
+  str_pre_post <- str %>%
+  mutate(time = if_else(time %in% c("pre", "session1"), "pre", time)) %>%
+  filter(time %in% c("pre", "post")) %>%   
+  group_by(participant, sex, time, sets, exercise, leg) %>%
+  summarise(load = max(load, na.rm = TRUE), .groups = "drop") %>%
+  filter_all(all_vars(!is.infinite(.)))
+
+
+  
+str_change <- str_pre_post %>% 
+pivot_wider(names_from = time, values_from = load) %>%
+  mutate(change = post - pre) %>%
+  
+  select(participant, sex, sets,exercise, change) %>%
+  pivot_wider(names_from = sets, 
+              values_from = change) %>%
+  
+  mutate(diff = multiple - single) %>%
+  
+print()
+ 
+str_tst <-str_change %>% 
+  filter(exercise == "legpress") %>% 
+  select(participant, sex, single, multiple, diff) %>% 
+  print()
+
+tt2 <- t.test(str_tst$multiple, str_tst$single, paired = TRUE)
+
+
+str(tt2)
+
+pval2 <- round(tt2$p.value, 3)
+
+tval2 <- round(tt2$statistic, 2)
+
+df2 <- tt2$parameter
+
+cil2 <- round(tt2$conf.int[1], 1)
+ciu2 <- sprintf("%.1f", round(tt2$conf.int[2], 1))
+
+estimate2 <- round(tt2$estimate, 1) 
+
+strength.results <- paste0(estimate2,
+                             " (95% CI: [",
+                            cil2,
+                            ", ",
+                            ciu2,
+                            "], *p*-value = ",
+                            pval2,
+                            ", t<sub>",
+                            df2, "</sub> = ",
+                            tval2,")")
+ 
+```
+
+The mean difference in maximal strength change between sets conditions was `r strength.results`.
+
+```{r}
+#| echo: false 
+#| message: false
+#| warning: false
+#| label: tbl-change-strength 
+#| tbl-cap: "Mean muscle strength change by sex"
+    
+library(dplyr)
+library(gt)
+
+
+strength_mean_by_sex <- str_tst %>%
+  group_by(sex) %>%
+  summarise(
+    mean_single = mean(single, na.rm = TRUE),
+    mean_multiple = mean(multiple, na.rm = TRUE),
+    mean_diff = mean(diff, na.rm = TRUE)) %>%
+  mutate(sex = if_else(sex == "female", "Female", "Male"))
+
+
+strength_mean_by_sex %>%
+  gt() %>%
+  cols_label(
+    sex = "Sex",
+    mean_single = "Mean single set change",
+    mean_multiple = "Mean multiple set shange",
+    mean_diff = "Mean difference (multiple - single)") %>%
+ 
+  fmt_number(
+    columns = c(mean_single, mean_multiple, mean_diff),
+    decimals = 2) %>%
+  
+  cols_align(
+    align = "center",
+    columns = everything()) %>%
+  tab_source_note(
+    source_note = "Data is in kilograms (kg)")
+ 
+
+```
+
+Comment on @tbl-change-strength.
+
+```{r}
+#| echo: false 
+#| message: false
+#| warning: false
+#| label: fig-max-strength 
+#| fig-cap: "Muscle strength changes from pre- to post-intervention in male and female participants"
+
+str_tst %>%
+  pivot_longer(names_to = "sets",
+               values_to = "load",
+               cols = multiple:single) %>%
+  mutate(sets = factor(sets, levels = 
+                         c("single", "multiple"))) %>%
+  mutate(sex = if_else(sex == "female", "Female", "Male"),
+         sets = if_else(sets == "multiple", "Multiple", "Single")) %>%
+  ggplot(aes(sets, load, group = participant, 
+             color = sex)) +
+  geom_line() +
+  geom_point() +
+  labs(x = "Sets",
+       color = "Sex",
+       y = "Load (kg)")
+```
+
+Comment on @fig-max-strength.

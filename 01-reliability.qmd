@@ -1,0 +1,91 @@
+---
+title: "Reliability and tools for reproducible data science"
+editor_options: 
+  chunk_output_type: console
+---
+```{r}
+#| echo: false
+#| warning: false
+
+library(readxl)
+library(dplyr)
+
+vars <- c("id", "timepoint", "temperature", "humidity", 
+          "sex", "age", "height", "weight", "w.max", 
+          "vo2.max", "vco2.max", "rer.max", "ve.max", 
+          "bf.max", "hr.max", "la.max", 
+          "borg.max")
+
+
+dat <- bind_rows(
+read_excel("g1.xlsx", sheet = "data_excel", na = "na") %>%
+  select(all_of(vars)) %>%
+  mutate(group = "G1", 
+         id = paste0(group, "_", id)) ,
+
+read_excel("g2.xlsx", na = "na") %>%
+   select(all_of(vars)) %>%
+  mutate(group = "G2", 
+         id = paste0(group, "_", id)) ,
+
+read_excel("g3.xlsx") %>%
+   select(all_of(vars)) %>%
+  mutate(timepoint = paste0("t", timepoint), 
+         group = "G3", 
+         id = paste0(group, "_", id)) ,
+
+read_excel("g4.xlsx") %>%
+   select(all_of(vars)) %>%
+  mutate(group = "G4", 
+         id = paste0(group, "_", id)) )
+```
+
+
+## Introduction
+
+Reliability is essential in both research and sports performance testing as it ensures consistent and accurate results over time. When a test is highly reliable, we can trust its findings and be confident that the experiment can be reproduced with similar outcomes. Moreover, high reliability allows researchers and coaches to track athletes’ progress effectively, making sure that changes in performance are due to actual improvements rather than measurement errors.Without reliable measurements and data, it becomes difficult to draw meaningful conclusions or develop effective training programs.
+
+The purpose of this report is to present estimates of reliability of measures collected from multiple VO~2~max tests. The VO~2~max test is often seen as the benchmark for assessing a person’s aerobic capacity and cardiovascular fitness as it measures the maximum oxygen volume a person can use during intense exercise. The test is therefore widely used in both clinical and sports settings as it is an important marker for endurance. On the other hand, its reliability can be affected by several factors, including the testing protocol, equipment calibration, participant motivation, and environmental conditions. Understanding these factors is critical for interpreting the results accurately and applying them effectively in training and research settings.
+
+The VO~2~max tests in our research project were performed in the physiology lab at Inland Norway University of Applied Sciences and we used Rstudio to analyze the data and to estimate if the performed tests were reliable.
+
+## Method 
+
+We performed a test-retest in our study where we gathered data from multiple VO~2~max tests. 16 subjects performed two till four tests in the time span of 3 weeks. The first two tests were performed within 24 hours of each other during the first week. The last two tests were performed within 48 hours of each other during the third week. 
+
+### Standardization pre-test
+The results of a VO~2~max test are influenced by a various of physiological and environmental factors, it is therefore important to set certain rules that the subject must follow in the days leading up to the test. A guideline may be sent out to the subject a couple of days before their first test with information regarding how they should prepare for test day. This guideline should include standardization practices that helps isolate the true aerobic performance of the subject and eliminates external factors that could influence the test results. Biological factors that are controlled for are exercise, hydration, sleeping schedule, caffeine and caloric intake, alcohol consumption and the time of day the test is performed. The subject then must follow the same schedule leading up to their next test to ensure the accuracy, reliability, and comparability of the test results.  
+
+### Equipment 
+Specific equipment is needed to perform a VO~2~max test. We had the subject perform the test on a cycle ergometer. This is a stationary bike that allows for incremental increases in resistance (W) during the test to progressively challenge the subject’s aerobic capacity. We also used a system called Vyntus which measures the volume of oxygen consumed and carbon dioxide produced during the test. It has an automated software that helps us collect and analyze the data. There is also an integrated on-board pulse oximeter and automated volume and gas calibration. The subject had to wear a heart rate monitor attached to a chest strap in addition to a mouthpiece and a nose clip. The mouthpiece is connected by a hose to the mixing chamber that collects exhaled air that is analyzed by Vyntus. To measure the subject’s lactate, we used a machine called Biosen which analyzes the blood and provides lactate values. Lastly, we had a stopwatch, an additional computer for our excel spread sheet and a scale to measure the subjects weight before starting the test. The whole setup allows us to monitor and measure the needed data to determine the subject’s VO~2~max as it gives us accurate information of the subject’s oxygen consumption, heart rate, and cycling power output. 
+
+### Protocol 
+The test protocol for performing a VO2.max test tells us how the test should be performed each time as standardization is important to get accurate and reliable results. A subject should therefore have the same test leader if a test is repeated. During our tests we adhered to the following protocol where a spread sheet in excel is prepared by the test leader before coming to the lab. When arriving, the test leader puts on a lab coat and ensures that Biosen (lactate measurement) is turned on. The machine then needs to be calibrated, and the results should come out to be 12 mmol/la. In the event of a calibration error, meaning that the instrument may provide inaccurate data, the standard fluid gets changed. Vyntus then needs to be calibrated by gas calibration and volume calibration. Gas calibration must be within 2.0 diff. and the volume calibration must be within 0.2 diff. Here the gas container needs to be opened, and the ventilation volume transducer (Triple-V turbine) must be attached to Vyntus. While the calibrations are in progress, the test leader puts together the mouthpiece, along with the nose clip, and attaches it with a hose to the mixing chamber. Then the cycle ergometer needs to be calibrated by positioning the crank arm straight up. This calibration is done on the computer connected to the ergometer as we use a different program here than Vyntus. The crank arm is looked at to make sure that it is 172.5 mm long and that the correct pedal type is attached. Lastly the equipment to measure lactate is collected and everything is ready for the subjects arrival. 
+
+A participant profile must be created in both Vyntus and the ergometer program. The profile includes the subjects name, date of birth, gender, height and weight. The first thing we do when the subject arrives is to measure weight, here the weight shown on the scale is subtracted by 300g. The cycling ergometer is then adjusted so that the subject is sitting comfortably on the bike. The bike settings are then saved in the cycling program to be used for future tests. Now the subject is ready for warm-up. The warm-up is 5 minutes long where the subject should have a progressively increase on the Borg Rating of Perceived Exertion (RPE) scale from 10 to 13. If the subject wants, the fan is turned on and faced towards them. The test leader then proceeds to inform about the test and Borg scale.
+Vyntus is then set to “measurement” and test leader makes sure that the heart rate monitor is connected to Vyntus, as well as making sure that the settings are set to 30 seconds measurements and size medium for the mouthpiece. The gas container gets closed, and Triple-V is disconnected from Vyntus and attached to the mixing chamber. Warm up is finished and the test gets started in Vyntus. The actual test starts when 1 minute has pasted in Vyntus and the VO2.max protocol starts on the cycling program. A stopwatch is also started and gets placed in front of the subject. 
+
+Throughout the test, the test leader informs about increases in resistance (W), normally 20W increases for women and 25W for men, and pushes the subject to pedal until exhaustion. The test stops when the subject gives up or the RPM drops below 60. The test leader writes down the maximum heart rate, end time, end wattage and borg score at the end of test in the excel spread sheet. Lactate is taken one minute after the test ends by wiping off the finger of the subject, poke a whole, wiping off the first drop of blood and then filling up the tube. The blood is then analyzed in Biosen. The subject is done testing and may leave, while test leader ends the test in both Vyntus and the cycling program. The bike, mouthpiece, hose and heart rate monitor get washed and the fan is faced towards the mixing chamber to let it dry. 
+
+### Post-test data preparation 
+Correctly gathering the data from the test is critical as it gives us insight into the subject’s aerobic capacity and overall cardiovascular fitness. The report generated by Vyntus is saved onto a memory stick so it can later be saved to OneDrive. The excel spread sheet is then filled with values from the report. These values include absolute VO~2~max (vo2.max) expressed in milliliters of oxygen per minute (ml/min), giving us the total oxygen consumption of the subject which is needed for assessing overall capacity.  The maximum volume of carbon dioxide (CO~2~) produced (vco2.max) which tells us how much CO~2~ is being expelled by the subject’s body during the test. Respiratory exchange ratio (RER) which is used to estimate the ratio of carbon dioxide (CO~2~) produced to oxygen (O~2~) consumed during metabolism. The maximum minute ventilation (VE.max) which is the highest volume of air the subject can move in and out of their lungs per minute. The breathing frequency maximum (BF.max) which is the maximum number of breaths per minute the subject takes at peak exercise intensity. Lastly, the lactate measurements are gathered from the Biosen machine. Maximum heart rate, end time, end wattage and borg score are already filled out from end of test while ID, period, timepoint, date, time of day, temperature, humidity, sex, age, height and weight was filled out pre-test. We then got the data from the other groups and collected it all in one excel sheet. The data was then exported into RStudio where we further analyzed our results. 
+
+## Results 
+We chose to analyze the relationship between absolute VO~2~max and timepoint. 
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-VO2max
+#| fig-cap: "VO~2~max per participant per test"
+
+library(ggplot2)
+  ggplot(data = dat, aes(x = id , y = vo2.max, color = timepoint)) + geom_point() + geom_smooth() +
+    labs(x = "Participant",
+         y = "VO2.max (ml/min)",
+         color = "Timepoint") +
+     scale_x_discrete(guide = guide_axis(n.dodge=3))
+```
+ In @fig-VO2max you can see that...
+
