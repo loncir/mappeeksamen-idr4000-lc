@@ -6,13 +6,23 @@ editor_options:
 
 ## Introduction
 
-Resistance training is a general term referring to exercise requiring one to exert force against a resistance [@kraemer2017]. By using resistance, whether from weights or body weight, resistance training helps improve muscle strength, endurance, and power. Resistance training have therefore become a fundamental element in fitness and rehabilitation due to it's variety of health benefits, as it enhances physical performance and improves overall quality of life. Such benefits are valuable across many fields, from sports to general health and longevity. Investigating the effects of resistance training is therefore of significant interest for understanding how it can best be used to optimize the effect of its wide-ranging health benefits. Different variables in resistance training, such as volume, may affect the outcome, making it essential to examine how specific training protocols contribute to muscular strength and body composition.
+[@krieger2009]
+
+[@rhea2003]
+
+[@Ostrowski1997-at]
+
+[@Cannon2010-un]
+
+[@Berger1962-lc]
+
+[@humburg2007]
 
 ## Methods
 
 ### Participants
 
-The study included 34 participants between the ages of 18 and 40. To be eligible for the study one had to meat specific health criteria and be a non-smoker. People were excluded if they had any sensitivity to local anesthetics, had participated in resistance training more than once a week in the previous year, had limitations in muscle strength due to injury, or were taking medications that could interfere with training outcomes[@hammarström2020]. Of the 34 participants, Participants are described in @tbl-participants. Overall, the male participants are older, taller and heavier than the female participants.
+The study included 34 participants between the ages of 18 and 40. To be eligible for the study one had to meat specific health criteria and be a non-smoker. People were excluded if they had any sensitivity to local anesthetics, had participated in resistance training more than once a week in the previous year, had limitations in muscle strength due to injury, or were taking medications that could interfere with training outcomes[@hammarström2020]. Participants are further described in @tbl-participants. Overall, the male participants are older, taller and heavier than the female participants.
 
 ```{r}
 #| echo: false
@@ -69,7 +79,7 @@ exscidata::dxadata %>%
 
 ### Data analysis
 
-t.test
+paired t.test
 
 ## Results
 
@@ -195,7 +205,7 @@ leanmass_mean_by_sex %>%
     source_note = "Data is in grams (g)") 
 ```
 
-Comment on @tbl-change-leanmass.
+@tbl-change-leanmass shows the average lean body mass changes from pre- to post-intervention in male and females. The average change for the single set condition were lower compared to the multiple set condition for both sexes, indicating that multiple sets results in a greater lean mass gain. The last column (Mean difference) indicates that the males had a higher increase of lean mass compared to the female participants.
 
 ```{r}
 #| echo: false 
