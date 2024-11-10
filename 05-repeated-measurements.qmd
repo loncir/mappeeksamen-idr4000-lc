@@ -6,17 +6,11 @@ editor_options:
 
 ## Introduction
 
-[@krieger2009]
+Resistance training is a general term referring to exercise requiring one to exert force against a resistance [@kraemer2017]. By using resistance, whether from weights or body weight, resistance training helps improve muscle strength, endurance, and power. This way of training have become a fundamental element in fitness and rehabilitation due to its variety of health benefits, as it enhances physical performance and improves overall quality of life. Such benefits are valuable across many fields, from sports to general health and longevity. Investigating the effects of resistance training is therefore crucial for understanding how to best utilize its extensive health benefits. Different variables in resistance training, such as volume, may affect the outcome, making it essential to examine how specific training protocols contribute to muscular strength and body composition.
 
-[@rhea2003]
+Resistance training volume refers to the total amount of work performed in a single resistance training session or across multiple sessions. Volume is a crucial variable in resistance training as it influences the training adaptions, such as muscle growth, lean body mass and muscle strength. Muscle growth, or hypertrophy, involves an increase in the number of muscle fibers and thus increased muscular size [@kraemer2017] while lean body mass refers to the total body mass without the weight of body fat. Muscle hypertrophy is one component of lean mass gain as gains in lean mass are often attributed to hypertrophy. Muscle strength refers to the maximum force or tension that a muscle or group of muscles can generate during a single maximal effort and is influenced by factors such as hypertrophy [@kraemer2004]. Finding the right volume balance is essential as different volumes may lead to different results. Some authors have claimed that multiple sets are necessary to optimize strength gains, while others have argued that a single set per exercise is all that is necessary, and further gains are not achieved by successive sets [@krieger2009]. Ostrowski et al. investigated the impact of different volumes of resistance training on muscle size and function over a 10-week period and found that regardless of the volume of training, all groups experienced increases in muscle size and strength [@Ostrowski1997-at]. These findings are supported by Cannon & Marino as their findings demonstrate that additional neuromuscular adaption during early-phase moderate-intensity resistance training may not be elicited through higher-volume training when training loads are matched provided that a minimal volume threshold is attained [@Cannon2010-un]. However, evidence from several other studies supports greater strength gains with multiple sets. One of the most notable scientific studies was performed in the early 1960s and found that different training volumes and intensities elicit different magnitudes of strength gains as three sets of six repetitions resulted in the greatest strength increases [@rhea2003] & [@Berger1962-lc]). A more recent study, done by Humburg et al., support these findings as they argue that improvements for 1RM is significantly higher during a 3-set program compared to a 1-set program [@humburg2007].
 
-[@Ostrowski1997-at]
-
-[@Cannon2010-un]
-
-[@Berger1962-lc]
-
-[@humburg2007]
+As a result, there has been considerable debate over the optimal number of sets per exercise to improve musculoskeletal strength during a resistance exercise program \[krieger2009\]. Additionally, much research has been performed examining strength increases with training, but they provide little insight into the magnitude of strength gains along the continuum of training volume [@rhea2003]. Hence, the purpose of this study is to identify the effect of single- and multiple-set programs on lean body mass and maximal strength by using a within-participant study design.
 
 ## Methods
 
@@ -71,15 +65,19 @@ exscidata::dxadata %>%
 
 ### Study overview
 
+The 12-week training intervention consisted of full-body resistance exercises. Leg exercises were done one leg at a time, allowing for the comparison of different training volumes and its effect on each participant. One leg was randomly assigned to perform a single set of each exercise, while the other leg performed three sets. This allowed each participant to engage in both workout protocols. Muscle strength was evaluated at the beginning of the intervention (pre), and at the end of the 12 weeks (post). Body composition, including measurements of hypertrophy and lean mass gain, were taken at the start and conclusion of the study.
+
 #### Training protocol
 
-#### Assessment of body composition
+Participants completed a standardized warm-up before each workout. The warm-up included cycling on an ergometer for 5 minutes with a rate of perceived exertion (RPE) score of 12-14 as the intensity should be moderate. Secondly, they did bodyweight exercises such as back extensions, push-ups and squats for 10 repetitions. Lastly, participants performed one set of 10 reps at 50% of their one-repetition maximum (1RM) for each exercise. Leg resistance exercises were performed as either one set (single) or three sets (multiple), with the single set completed between the second and third set in the multiple-set routine. Exercises were performed in order with unilateral leg press first, then leg curl and lastly knee extension. Rest intervals between the sets ranged from 90 to 180 seconds. The training intensity gradually increased over the course of the intervention. The participants started with 10RM for the first two weeks, then 8RM for the following three weeks, and lastly 7RM for the remaining seven weeks. One session a week with reduced loads (90%) were introduced from the ninth session. High-intensity training sessions were spaced at least 48 hours apart, while sessions with reduced loads were scheduled at least 24 hours apart from other sessions.
 
-#### Muscle strength and hypertrophy assesments
+#### Maximal strength and lean mass assessments
+
+Maximal strength for unilateral leg press was evaluated using the one-repetition maximum (1RM) method. 1RM was found by progressively increasing the weight until the participant could no longer complete a full range of motion. The successful lift with the highest load was recorded as the 1RM. Lean mass (and hypertrophy) was measured regionally and determined before and after the training intervention using a dual-energy X-ray absorptiometry (DXA) scanner and magnetic resonance imaging (MRI). MRI specifically determined the knee-extensor muscle cross-sectional area (CSA; vastus lateralis, medialis, intermedius and rectus femoris).
 
 ### Data analysis
 
-paired t.test
+In this study, we used a paired t-test to compare the pre- and post-intervention measurements between single and multiple sets for each participant.
 
 ## Results
 
@@ -167,7 +165,7 @@ lean.mass.results <- paste0(estimate,
 
 ```
 
-The mean difference in regional lean body mass change between sets conditions was `r lean.mass.results`.
+The mean difference in grams (g) for regional lean body mass change between single and multiple sets was `r lean.mass.results`.
 
 ```{r}
 #| echo: false 
@@ -202,10 +200,8 @@ leanmass_mean_by_sex %>%
     align = "center",
     columns = everything()) %>%
   tab_source_note(
-    source_note = "Data is in grams (g)") 
+    source_note = "Data is in grams (g) and shows the average lean body mass changes from pre- to post-intervention in male and females. The average change for the single set condition where lower compared to the multiple set condition for both sexes, indicating that multiple sets results in a greater lean mass gain. The last column (Mean difference) indicates that the males had a higher increase of lean mass between the different sets compared to the female participants") 
 ```
-
-@tbl-change-leanmass shows the average lean body mass changes from pre- to post-intervention in male and females. The average change for the single set condition were lower compared to the multiple set condition for both sexes, indicating that multiple sets results in a greater lean mass gain. The last column (Mean difference) indicates that the males had a higher increase of lean mass compared to the female participants.
 
 ```{r}
 #| echo: false 
@@ -240,17 +236,18 @@ ggplot(leanmass_summary, aes(x = sets, y = mean_change, fill = sex)) +
   labs(
     x = "Sets",
     y = "Mean Change in Lean Body Mass (g)",
-    fill = "Sex"
+    fill = "Sex",
+    caption = "Multiple sets give a higher average increase in lean mass gains compared to a single set in both female and male participants. \nThe black lines represent the standard error of the mean (SE) for each condition (singe and multiple sets) and for each sex \n(male and female), indicating the variability of the mean change values. "
   ) +
   theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5),
-    legend.position = "top"
+    legend.position = "top",
+    plot.caption = element_text(hjust = 0, size = 8, face = "italic") # Adjusts caption alignment, size, and style
   )
+ 
 
 ```
-
-Comment on @fig-lean-body-mass.
 
 ### Higher training volume results in greater muscular strength
 
@@ -332,7 +329,7 @@ strength.results <- paste0(estimate2,
  
 ```
 
-The mean difference in maximal strength change between sets conditions was `r strength.results`.
+The mean difference in kilograms (kg) for maximal strength change between single and multiple sets was `r strength.results`.
 
 ```{r}
 #| echo: false 
@@ -340,6 +337,7 @@ The mean difference in maximal strength change between sets conditions was `r st
 #| warning: false
 #| label: tbl-change-strength 
 #| tbl-cap: "Mean muscle strength change by sex"
+
     
 library(dplyr)
 library(gt)
@@ -370,12 +368,10 @@ strength_mean_by_sex %>%
     align = "center",
     columns = everything()) %>%
   tab_source_note(
-    source_note = "Data is in kilograms (kg)")
+    source_note = "Data is in kilograms (kg) and shows the average muscle strength changes from pre- to post-intervention in male and females. The average change for the single set condition where lower compared to the multiple set condition for both sexes, indicating that multiple sets results in a greater strength gain. The last column (Mean difference) indicates that the females had a greater difference in gain of muscle strength between the sets compared to the male participants.")
  
 
 ```
-
-Comment on @tbl-change-strength.
 
 ```{r}
 #| echo: false 
@@ -384,21 +380,33 @@ Comment on @tbl-change-strength.
 #| label: fig-max-strength 
 #| fig-cap: "Muscle strength changes from pre- to post-intervention in male and female participants"
 
-str_tst %>%
-  pivot_longer(names_to = "sets",
-               values_to = "load",
-               cols = multiple:single) %>%
-  mutate(sets = factor(sets, levels = 
-                         c("single", "multiple"))) %>%
-  mutate(sex = if_else(sex == "female", "Female", "Male"),
-         sets = if_else(sets == "multiple", "Multiple", "Single")) %>%
-  ggplot(aes(sets, load, group = participant, 
-             color = sex)) +
-  geom_line() +
-  geom_point() +
-  labs(x = "Sets",
-       color = "Sex",
-       y = "Load (kg)")
+strength_summary <- str_change %>%
+  filter(exercise == "legpress") %>%
+  pivot_longer(cols = single:multiple, names_to = "sets", values_to = "change") %>%
+  group_by(sex, sets) %>%
+  summarise(
+    mean_change = mean(change, na.rm = TRUE),
+    se_change = sd(change, na.rm = TRUE) / sqrt(n()),  
+    .groups = 'drop')
+
+ggplot(strength_summary, aes(x = sets, y = mean_change, fill = sex)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.7), width = 0.6) +
+  geom_errorbar(aes(ymin = mean_change - se_change, ymax = mean_change + se_change),
+                width = 0.2, position = position_dodge(width = 0.7)) +
+  labs(
+    x = "Sets",
+    y = "Mean Change in Strength (kg)",
+    fill = "Sex",
+    caption = "Multiple sets give a higher average increase in maximal strength compared to a single set in both female and male participants. \nThe black lines represent the standard error of the mean (SE) for each condition (singe and multiple sets) and for each sex (male \nand female), indicating the variability of the mean change values."
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "top",
+    plot.caption = element_text(hjust = 0, size = 8, face = "italic"))
+
 ```
 
-Comment on @fig-max-strength.
+## Discussion 
+
+## Conclusion 
