@@ -1,7 +1,7 @@
 # Preface {.unnumbered}
 
-This is the portfolio exam for IDR4000.
+This is the portfolio exam for IDR4000_1.
 
 Each part has been produced by me or as group work in a class context.
 
-Data and code for the different sections can be found in the following GitHub repository:
+Data and code for the different sections can be found in the following GitHub repository: <https://github.com/loncir/mappeeksamen-idr4000-lc.git>

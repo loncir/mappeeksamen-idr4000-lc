@@ -4,6 +4,15 @@ editor_options:
   chunk_output_type: console
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  fig.pos = "H",                # Place figures exactly where specified
+  table.placement = "H",        # Place tables exactly where specified
+  fig.cap = TRUE                # Enable figure captions
+)
+
+```
+
 ```{r}
 #| echo: false
 #| warning: false
