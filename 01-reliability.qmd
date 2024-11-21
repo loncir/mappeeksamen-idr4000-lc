@@ -4,14 +4,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-  fig.pos = "H",                # Place figures exactly where specified
-  table.placement = "H",        # Place tables exactly where specified
-  fig.cap = TRUE                # Enable figure captions
-)
 
-```
 
 ```{r}
 #| echo: false
@@ -158,72 +151,38 @@ dat_wide %>%
 ```
 
 
-### Calculation of typical error between test 1 and test 2
+### Calculation of typical error between tests
+
+As shown in @tbl-TE1, the average VO~2~max across all timepoints (mean) came out to be 4102.1 mL/min suggesting that, on average, the participants have a high aerobic capacity that did not change during the 3 weeks of testing. The variability in VO~2~max scores among participants (SD) was 183.5 mL/min for Test 1 and 2 and 240.9 mL/min for Test 3 and 4. This suggests a moderate spread around the mean, highlighting individual differences in performance. Notably, the variability was greater for Test 3 and 4, indicating more pronounced variation in performance during those tests.
+Additionally, the typical error (TE) measures the inconsistency between the two timepoint measurements for each participant and shows what the typical fluctuation in VO~2~max readings between tests are. Remarkably, the typical error was higher for test 3 and 4 indicating a bigger flucutation between tests. Lastly, we calculated the coefficient of variation (CV) to be 3.2% and 4.2%.
+
 
 ```{r}
 #| message: false
 #| warning: false
 #| echo: false
 #| label: tbl-TE1
-#| tbl-cap: "Typical error between test 1 & 2"
+#| tbl-cap: "Typical error between tests"
 
 
-cv1 <- dat %>%
-  select(id, timepoint, vo2.max) %>%
-  pivot_wider(names_from = timepoint, 
-              values_from = vo2.max) %>%
-  
-  mutate(diff = t2 - t1) %>% 
-  summarise(mean = mean(c(t1, t2), na.rm = TRUE), 
-            sd = sd(diff, na.rm = TRUE),  
-            te = sd / sqrt(2), 
-            cv = 100 * (te/mean)) 
+library(gt)
 
 
-cv1 %>% gt() %>%
-   fmt_number(decimals = 1) %>%
+data <- tibble(
+  Measure = c("Mean", "SD", "TE", "CV"),
+  `Test 1&2` = c(4102.1, 183.5, 129.8, 3.2),
+  `Test 3&4` = c(4102.1, 240.9, 170.3, 4.2))
+
+
+data %>%
+  gt() %>%
+  fmt_number(columns = vars(`Test 1&2`, `Test 3&4`), decimals = 1) %>%
   tab_options(
-    table.font.size = px(9), 
-    table.width = px(500)    
-  )
-
-cv_percent1 <- round(cv1$cv,2) 
-
+    table.font.size = px(12),
+    table.width = px(500))
 
 ```
 
-As shown in @tbl-TE1, the average VO~2~max across timepoint 1 and 2 (mean) came out to be 4102.1 mL/min suggesting that, on average, the participants have a high aerobic capacity. The variability of VO~2~max scores across the participants (sd) came out to be 183.5 mL/min. This shows a moderate spread in VO~2~max values around the mean, implying that while the group has similar fitness levels, there is still some individual variation in performance. Additionally, the typical error (te) measures the inconsistency between the two timepoint measurements for each participant. A typical error of 129.8 means that the typical fluctuation in VO~2~max readings between timepoint 1 and timepoint 2 is about 130 mL/min. Lastly, we calculated the coefficient of variation (cv) between test 1 and test 2 to be 3.2%.
-
-### Calculation of typical error between test 3 and test 4
-
-```{r}
-#| echo: false
-#| label: tbl-TE2
-#| tbl-cap: "Typical error between test 3 & 4"
-
-cv2 <- dat %>%
-  select(id, timepoint, vo2.max) %>%
-  pivot_wider(names_from = timepoint, 
-              values_from = vo2.max) %>%
-  
-  mutate(diff = t3 - t4) %>% 
-  summarise(mean = mean(c(t1, t2), na.rm = TRUE), 
-            sd = sd(diff, na.rm = TRUE),  
-            te = sd / sqrt(2), 
-            cv = 100 * (te/mean)) 
-  
-cv2 %>% gt() %>% 
-  fmt_number(decimals = 1) %>%
-  tab_options(
-    table.font.size = px(9), 
-    table.width = px(500)    
-  )
-
-
-cv_percent2 <- round(cv2$cv,1)
-```
-
-As shown in @tbl-TE2, the average VO~2~max across timepoint 2 and 3 (mean) came out to be 4102.1 mL/min. This is exactly the same average as between timepoint 1 and 2, indicating that, on average, the aerobic capacity of the participants did not change during the 3 weeks of testing. The variability of VO~2~max scores across the participants (sd) came out to be 240.9 mL/min. This shows a spread in VO~2~max values around the mean that is higher than for the previous 2 tests, implying that there is a higher individual variation in performance for test 3 and 4. Additionally, the typical error (te) came out to be 170.3 meaning that the typical fluctuation in VO~2~max readings between timepoint 3 and timepoint 4 is about 170 mL/min. This is almost 40 mL/min more than between test 1 and 2. Lastly, we calculated the coefficient of variation (cv) between test 3 and test 4 to be 4.2%.
 
 ## Discussion
 

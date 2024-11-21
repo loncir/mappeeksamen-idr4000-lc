@@ -26,7 +26,7 @@ In part 3 of the report, we conducted a statistical analysis of the relationship
 
 ### Part 1: Lactate thresholds
 
-We found that a fourth-degree polynomial model was the best fit for our data (see @fig-2.5). We predicted the blood lactate threshold at 2 mmol L^-1^ to be 271.8 watts (see @tbl-lactate2) and the blood lactate threshold at 4 mmol L^-1^ to be 314.2 watts (see @tbl-lactate4).
+We found that a fourth-degree polynomial model was the best fit for our data (see @fig-2.5). We predicted the blood lactate threshold at 2 mmol L^-1^ to be 271.8 watts and the blood lactate threshold at 4 mmol L^-1^ to be 314.2 watts (see @tbl-lactate24).
 
 ```{r}
 #| warning: false
@@ -182,35 +182,33 @@ lactate_threshold_4 <- ndf %>%
 
 ```
 
-```{r}
-#| warning: false
-#| message: false
-#| echo: false
-#| label: tbl-lactate2
-#| tbl-cap: "Lactate threshold calculations for 2 mmol L^-1^"
-
-library(gt)
-lactate_threshold_2 %>% gt() %>%
-  tab_options(
-    table.font.size = px(9), 
-    table.width = px(500))
-```
 
 ```{r}
 #| warning: false
 #| message: false
 #| echo: false
-#| label: tbl-lactate4
-#| tbl-cap: "Lactate threshold calculations for 4 mmol L^-1^"
-
+#| label: tbl-lactate24
+#| tbl-cap: "Lactate threshold calculations"
+ 
 library(gt)
-lactate_threshold_4 %>% gt() %>%
+
+combined_table <- bind_rows(
+  lactate_threshold_2,
+  lactate_threshold_4) %>%
+  mutate(lactate = c(2, 4)) %>%
+  relocate(lactate)
+
+
+combined_table %>%
+  gt() %>%
   tab_options(
-    table.font.size = px(9), 
+    table.font.size = px(9),
     table.width = px(500))
 ```
+
 
 ### Part 2: Predicting sizes of DNA fragments, or slopes of a qPCR calibration curve
+We determined that a linear regression model most effectively represents the relationship between migration distance and molecular weight, see @fig-2.6. 
 
 ```{r}
 #| warning: false
@@ -249,6 +247,7 @@ unknown$preds <- preds
 ```
 
 ### Part 3: Interpreting a regression table
+The results show no correlation between SQUAT 3RM (kg) and FAST CSA T1 (µm^2^) (Estimate = 5.483, SE = 8.032, t-value = 0.683, p-value = 0.5), see @fig-reg.
 
 ```{r}
 #| warning: FALSE
@@ -298,8 +297,6 @@ model <- lm(FAST_CSA_T1 ~ SQUAT_3RM, dat)
 
 
 ```
-
-The results show no correlation between SQUAT 3RM (kg) and FAST CSA T1 (µm^2^) (Estimate = 5.483, SE = 8.032, t-value = 0.683, p-value = 0.5), see @fig-reg.
 
 ## Discussion
 

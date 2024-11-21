@@ -213,12 +213,14 @@ ggplot(data, aes(x = Avg_Ct, y = Log_sample_quan, color = Fortynning)) +
 
 ### Gene Expression
 
+
 ```{r}
 #| message: false
 #| echo: false
 #| warning: false
 #| label: tbl-ct 
 #| tbl-cap: "Cycle threshold values"
+#| fig-pos: "H"
 
 table_data2 <- data.frame(
   Sample = c("FP6 R w0", "FP6 R w2pre", "FP6 R w0", "FP6 R w2pre", "FP6 R w0", "FP6 R w2pre"),
@@ -236,12 +238,13 @@ table_data2 <- data.frame(
   TwoΔΔCt = c(28.867, 18.536, 12.613, 16.944, 0.253, 0.555))
 
 
+
 table_data2 %>% gt() %>% tab_source_note(
     source_note = "Number of cycles to reach the cycle threshold (CT) has changed from week 0 to week 2. The number of cycles decreased for myhc1 from an average of 19.7 to 19.3 cycles. For myhc2a, the cycles dropped from 20.9 to 19.4, and for myhc2x it went from 26.6 to 24.4 cycles. This indicates that the gene expression increased from week 0 to week 2 as fewer cycles indicate higher gene expression.") %>%
   tab_options(
     table.font.size = px(9), 
-    table.width = px(500)    
-  )
+    table.width = px(500))
+
 
 ```
 
@@ -251,6 +254,7 @@ table_data2 %>% gt() %>% tab_source_note(
 #| warning: false
 #| label: tbl-x2
 #| tbl-cap: "Percentage amount of gene expression for the different muscle types"
+
 
 table_data3 <- data.frame(
   `100%` = c(41.733, 36.034),
