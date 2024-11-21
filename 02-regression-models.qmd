@@ -1,0 +1,326 @@
+---
+title: "Regression models, predicting from data "
+editor_options: 
+  chunk_output_type: console
+---
+
+## Introduction
+
+The purpose of this report is to predict data using regression analysis performed in RStudio, as well as to interpret a regression table. The report consists of three sections. By determining the lactate threshold at blood lactate values of 2 and 4 mmol L^-1^, we analyze the relationship between performance in watts and training intensity. We also analyzed the slope of a qPCR calibration curve and interpreted a regression table on the relationship between 3RM squat and the cross-sectional area of type II muscle fibers.
+
+## Method
+
+### Part 1: Lactate thresholds
+
+In part 1 of the report, we used the dataset *cyclingstudy* from [@Sylta] to predict two specific blood lactate thresholds at 2 and 4 mmol L^-1^. The data analysis was conducted in RStudio.
+
+### Part 2: **Predicting sizes of DNA fragments, or slopes of a qPCR calibration curve**
+
+In part 2 of the report, using [@Schindelin], we analyzed an image of qPCR obtained from the experiment ""DNA extraction and analysis" [@DNA]. The image analysis provided data, which we applied in RStudio to predict the slope of the qPCR calibration curve.
+
+### Part 3: Interpreting a regression table
+
+In part 3 of the report, we conducted a statistical analysis of the relationship between Type II (FAST) fibers cross-sectional area (µm^2^) at baseline (FAST_CSA_T1) and Squat 3 repetition maximum load (kg) at baseline (SQUAT_3RM) from the dataset of [@Haun2018] and [@Haun2019] to investigate whether there was a linear relationship.
+
+## Results
+
+### Part 1: Lactate thresholds
+
+We found that a fourth-degree polynomial model was the best fit for our data (see @fig-2.5). We predicted the blood lactate threshold at 2 mmol L^-1^ to be 271.8 watts (see @tbl-lactate2) and the blood lactate threshold at 4 mmol L^-1^ to be 314.2 watts (see @tbl-lactate4).
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+#| label: fig-2.1
+#| fig-cap: "Relationship between workload (watt) and lactate"
+
+library(tidyverse)
+library(exscidata)
+
+data("cyclingstudy")
+
+cyclingstudy %>%
+  select(subject, group, timepoint, lac.125:lac.375) %>%
+  filter(timepoint == "pre", subject == 3) %>%
+  pivot_longer(names_to = "watt", 
+               values_to = "lactate", 
+               names_prefix = "lac.",
+               names_transform = list(watt = as.numeric),
+               cols = lac.225:lac.375) %>%
+  ggplot(aes(watt, lactate, group = subject))  + 
+  geom_line(lty = 2) +
+  geom_point(shape = 23, fill = "pink", size = 3) +
+  labs(caption = "The relationship between workload (measured in watts) and lactate concentration for subject 3 \nat the pre-exercise time point. Each point on the graph represents lactate concentration \nmeasured at a specific workload. The dashed line connects the points for subject 3, indicating \nthe trend in lactate response as workload increases. A positive correlation is seen, where \nlactate levels increase with higher workloads. ") +
+  theme(plot.caption = element_text(hjust = 0, size = 10, face = "italic")) 
+```
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+#| label: fig-2.2
+#| fig-cap: "Estimated exercise intensity at 2 and 4 mmol L^-1^ "
+
+library(tidyverse)
+library(exscidata)
+
+data("cyclingstudy")
+
+cyclingstudy %>%
+  select(subject, group, timepoint, lac.125:lac.375) %>%
+  filter(timepoint == "pre", subject == 3) %>%
+  pivot_longer(names_to = "watt", 
+               values_to = "lactate", 
+               names_prefix = "lac.",
+               names_transform = list(watt = as.numeric),
+               cols = lac.225:lac.375) %>%
+  ggplot(aes(watt, lactate, group = subject))  + 
+  geom_line(lty = 2) +
+  geom_point(shape = 23, fill = "pink", size = 2) +
+   geom_hline(yintercept = 2, color = "deepskyblue") +
+  geom_vline(xintercept = 272, color = "deepskyblue") + 
+  geom_hline(yintercept = 4, color = "blue") +
+  geom_vline(xintercept = 312, color = "blue") +
+  labs(caption = "The value of x (watt) when y (lactate) is set to 2 and 4. The light blue lines is the approximate lactate \nthreshold for 2 mmol L-1. The dark blue lines is the approximate lactate threshold for 4 mmol L-1.") +
+  theme(plot.caption = element_text(hjust = 0, size = 10, face = "italic"))
+```
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+#| label: fig-2.4
+#| fig-cap: "Curve-linear relationships between exercise intensity and blood lactate"
+
+
+cyclingstudy %>%
+  select(subject, group, timepoint, lac.225:lac.375) %>%
+  filter(timepoint == "pre", subject == 3) %>%
+  pivot_longer(names_to = "watt", 
+               values_to = "lactate", 
+               names_prefix = "lac.",
+               names_transform = list(watt = as.numeric),
+               cols = lac.225:lac.375) %>%
+  ggplot(aes(watt, lactate, group = subject))  + 
+  geom_line(lty = 2) +
+  geom_point(shape = 23, fill = "pink", size = 3) +
+   geom_hline(yintercept = 2, color = "deepskyblue") +
+  geom_vline(xintercept = 270.8, color = "deepskyblue") + 
+  geom_hline(yintercept = 4, color = "blue") +
+  geom_vline(xintercept = 313.2, color = "blue") +
+  labs(caption = "The grey line represents the linear relationship between exercise intensity (watt) and blood lactate. \nOrange is a second degree polynomial model. Green is a third degree polynomial model. Pink is a fourth \ndegree polynomial model") + 
+  theme(plot.caption = element_text(hjust = 0, size = 10, face = "italic")) + 
+  geom_smooth(method = "lm", se = FALSE, formula = y ~ x, color = "azure4") +
+  geom_smooth(method = "lm", se = FALSE, formula = y ~ poly(x, 2), color = "orange") +
+  geom_smooth(method = "lm", se = FALSE, formula = y ~ poly(x, 3), color = "#4daf4a") +
+  geom_smooth(method = "lm", se = FALSE, formula = y ~ poly(x, 4), color = "deeppink") 
+```
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+#| label: fig-2.5
+#| fig-cap: "Assessing the fit of different linear models"
+
+
+lactate <- cyclingstudy %>%
+  select(subject, group, timepoint, lac.125:lac.375) %>%
+  filter(timepoint == "pre", subject == 3) %>%
+  pivot_longer(names_to = "watt", 
+               values_to = "lactate", 
+               names_prefix = "lac.",
+               names_transform = list(watt = as.numeric),
+               cols = lac.125:lac.375) %>%
+  filter(!is.na(lactate))
+
+m1 <- lm(lactate ~ watt, data = lactate)
+
+m2 <- lm(lactate ~ poly(watt, 2, raw = TRUE), data = lactate)
+
+m3 <- lm(lactate ~ poly(watt, 3, raw = TRUE), data = lactate)
+
+m4 <- lm(lactate ~ poly(watt, 4, raw = TRUE), data = lactate)
+
+lactate$resid.m1 <- resid(m1)
+lactate$resid.m2 <- resid(m2)
+lactate$resid.m3 <- resid(m3)
+lactate$resid.m4 <- resid(m4)
+
+lactate %>%
+  pivot_longer(names_to = "model", 
+               values_to = "residual", 
+               names_prefix = "resid.", 
+               names_transform = list(residual = as.numeric),
+               cols = resid.m1:resid.m4) %>%  
+  ggplot(aes(watt, residual, fill = model)) + geom_point(shape = 21, size = 3) +
+  labs(caption = "The fourth-degree polynomial model (m4) finds the observed values best as the points are scattered \naround zero. The third-degree model (m3) is the next best fit.") +
+  theme(plot.caption = element_text(hjust = 0, size = 10, face = "italic")) +
+  scale_fill_manual(values = c("azure4", "orange", "#4daf4a", "deeppink"))
+
+```
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+
+
+
+ndf <- data.frame(watt = seq(from = 225, to = 350, by = 0.1)) 
+
+ndf$predictions <- predict(m3, newdata = ndf)
+
+
+lactate_threshold_2 <- ndf %>%
+  filter(abs(predictions - 2) == min(abs(predictions - 2))) 
+
+
+lactate_threshold_4 <- ndf %>%
+  filter(abs(predictions - 4) == min(abs(predictions - 4))) 
+
+```
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+#| label: tbl-lactate2
+#| tbl-cap: "Lactate threshold calculations for 2 mmol L^-1^"
+
+library(gt)
+lactate_threshold_2 %>% gt() %>%
+  tab_options(
+    table.font.size = px(9), 
+    table.width = px(500))
+```
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+#| label: tbl-lactate4
+#| tbl-cap: "Lactate threshold calculations for 4 mmol L^-1^"
+
+library(gt)
+lactate_threshold_4 %>% gt() %>%
+  tab_options(
+    table.font.size = px(9), 
+    table.width = px(500))
+```
+
+### Part 2: Predicting sizes of DNA fragments, or slopes of a qPCR calibration curve
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+#| label: fig-2.6
+#| fig-cap: "Distance vs. Molecular weight. Illustrates the relationship between molecular weight and distance as measured in a molecular weight ladder. The blue points represent the known molecular weights corresponding to their distances in the gel. The fitted line (in black) shows the calibration curve derived from the ladder data, illustrating a clear relationship. The green points represent the predicted molecular weights for unknown samples based on their measured distances"
+
+ladder <- data.frame(dist = c(408, 430.5, 462.5, 494.5, 536.5, 588.5, 646.5,
+                              730.5, 772.5, 824.5, 888.5, 960.5, 1050.5),
+                     
+                     mw = c(1000, 900, 800, 700, 600, 500, 400, 300, 250, 200, 
+                            150, 100, 50))
+
+unknown <- data.frame(dist = c(700.5, 704.5, 702.5, 704.5, 708.5))
+
+
+  cal <- lm(log(mw) ~ dist, data = ladder)
+
+
+preds <- exp(predict(cal, newdata = unknown))
+
+unknown$preds <- preds
+
+
+  plot(ladder$dist, ladder$mw, log = "y", pch = 16, col = "blue",
+       xlab = "distance", ylab = "molecular weight") 
+ lines(ladder$dist, exp(fitted(cal)), col = "black")
+  points(unknown$dist, preds, pch = 17, col = "green")
+  legend("topright", legend = c("ladder", "calibration", "unknown preds"),
+       col = c("blue", "black", "green"), pch = c(16, NA, 17), lty = c(NA, 1, NA)) 
+  
+ 
+
+
+```
+
+### Part 3: Interpreting a regression table
+
+```{r}
+#| warning: FALSE
+#| message: FALSE
+#| echo: false
+#| label: fig-reg
+#| fig-cap: "Correlation between Type II (FAST) fibers cross-sectional area and Squat 3 repetition maximum load (kg)"
+ 
+library(exscidata)
+library(tidyverse)
+library(gt)
+ 
+dat <- hypertrophy %>%
+  select(PARTICIPANT, GROUP, FAST_CSA_T1, SQUAT_3RM)
+ 
+model <- lm(FAST_CSA_T1 ~ SQUAT_3RM, dat)
+ 
+dat %>%
+  ggplot(aes(x = SQUAT_3RM, y = FAST_CSA_T1)) +
+  geom_point(color = "blue", size = 2) + 
+  geom_smooth(method = "lm", se = TRUE, color = "red") + 
+  labs(
+    x = "SQUAT 3RM (kg)",
+    y = expression("FAST CSA T1 (" * mu * m^2 * ")")) +
+  theme_minimal()
+
+```
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+
+
+library(exscidata)
+library(tidyverse)
+library(gt)
+
+
+
+dat <- hypertrophy %>%
+  select(PARTICIPANT, GROUP, FAST_CSA_T1, SQUAT_3RM) 
+
+
+model <- lm(FAST_CSA_T1 ~ SQUAT_3RM, dat) 
+
+
+
+```
+
+The results show no correlation between SQUAT 3RM (kg) and FAST CSA T1 (µm^2^) (Estimate = 5.483, SE = 8.032, t-value = 0.683, p-value = 0.5), see @fig-reg.
+
+## Discussion
+
+### Part 1: Lactate thresholds
+
+Our results show the relationship between workload (in watts) and lactate concentration for subject 3 at the pre-exercise time point. @fig-2.1 shows a clear positive correlation, indicating that as workload increases, so does lactate concentration, which is expected in endurance exercise due to increased anaerobic metabolism [@Facey2013].
+
+@fig-2.4 contrasts the linear model (shown in gray) with polynomial regression models (in orange, green, and pink), which better capture the non-linear relationship between exercise intensity and lactate production. Notably, the linear model deviates significantly from the observed data around the 2 mmol L⁻¹ mark, indicating it is a poor fit for the data. In contrast, the polynomial models closely align with the observed values, particularly the fourth-degree polynomial model (m4, pink) showcased in @fig-2.5, which demonstrates the best fit as residuals are scattered around zero. This is no surprise as polynomial models with increased degrees has more flexibility to fit the data [@Hammarstrom2024]. However, the calculation of the profile curve was performed using a third-degree polynomial model (m3), as you cannot fit a fourth-degree polynomial model with only four data points [@Hammarstrom2024]. This way we also prevented our model from becoming more sensitive to bad measurements. Additionally, the use of a third-degree polynomial model has previously been shown to be effective for estimating a true lactate curve, as demonstrated in a prior study by [@newell2007].
+
+Our predictions gave us the lactate thresholds of 271.8 watts for 2 mmol L⁻¹ and 314.2 watts for 4 mmol L⁻¹, providing essential insights into subject 3's physiological response to exercise, which can inform training strategies and enhance performance outcomes.
+
+### Part 2: Predicting sizes of DNA fragments, or slopes of a qPCR calibration curve
+
+The calibration model describes the relationship between distance and molecular weight. After log-transforming the molecular weight, the relationship between distance and molecular weight becomes approximately linear, making a linear regression model appropriate. The predicted molecular weights for the unknown samples are based on the fitted calibration model. These predictions provide estimates of their molecular weight based on their migration distance in the gel.
+
+The QQ plot shows whether the differences between observed and predicted molecular weights follow a normal distribution. Ideally, the points in the QQ plot should fall along the reference line, which they appear to do, indicating that the model is well-specified and captures the relationship between migration distance and molecular weight.
+
+### Part 3: Interpreting a regression table
+
+The results show no correlation between FAST_CSA_T1 and SQUAT_3RM (Estimate = 5.483, SE = 8.032, t-value = 0.683, p-value = 0.5). The standard error (SE) explains how much the mean from our sample is expected to deviate from the same mean in the population [@Spiegelhalter2019-gy]. The p-value indicates that we would observe a similar or more extreme result in 50% of cases if we repeat the study, assuming the null hypothesis is true [@Spiegelhalter2019-gy]. The t-value suggests that the difference between the sample mean and the population mean is likely to be small [@Spiegelhalter2019-gy]. The low t-value, combined with the high p-value, indicates that there is no statistical basis for claiming that the difference between the sample mean and the population mean is significant. In summary, these findings suggest that there is no basis for saying that there is a significant correlation between the increase in SQUAT_3RM weight (kg) and the increase in FAST_CSA_T1 in micrometers (µm^2^). At the same time, the observed increase in FAST_CSA_T1 may instead be influenced by random variations rather than a systematic effect of increased strength.
+
+## Conclusion
+
+In conclusion, the analysis conducted in this report provided key insights into the relationships between different physiological variables and their predictive models. In part 1, the lactate thresholds at 2 and 4 mmol L⁻¹ where successfully determined for subject 3, with our polynomial regression models offering a more accurate fit compared to linear models. Part 2 focused on predicting molecular weights from a calibration curve, where a strong linear fit was observed between the distance traveled in the gel and the logarithm of molecular weight. Lastly, part 3 evaluated the relationship between muscle fiber cross-sectional area and squat performance, where no significant correlation was found, suggesting that the observed difference may be due to random variations rather than any specific relationship between muscle size and squat performance. Together, these findings underline the utility of regression models in making predictions and interpreting data.

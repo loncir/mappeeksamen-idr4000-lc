@@ -5,14 +5,19 @@ project:
   type: book 
 
 book: 
-  title: "Mappeeksamen"
-  author: "kandidatnummer"
+  title: "Mappevurdering: Kvantiativ metode og statistikk IDR4000_1"
+  subtitle: "Approx. 15,000 words"
+  author: "510"
   date: "2024-11-22"
   chapters: 
     - index.qmd
     - 01-reliability.qmd
+    - 02-regression-models.qmd
     - 03-stat-inf.qmd
+    - 04-study-design.qmd
     - 05-repeated-measurements.qmd
+    - 06-laboratory-report.qmd
+    - 07-philosophy-of-science.qmd
     - references.qmd
     
 bibliography: references.bib
@@ -22,6 +27,9 @@ format:
     theme: cosmo 
   pdf:
     documentclass: scrreprt
+    
+
+
 
 
 
