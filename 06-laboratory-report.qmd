@@ -128,14 +128,14 @@ We processed our myosin heavy chain gene expression data by using the Delta-Delt
 
 table_data2 <- data.frame(
   Dilution = c("1", "1/2", "1/10", "1/20", "1/200"),
-  Ct1 = c(28.678, 29.414, 31.776, 33.241, "Undetermined"),
-  Ct2 = c(28.708, 29.620, 31.416, 32.653, "Undetermined"),
-  Ct3 = c(29.155, 29.264, 32.413, "Undetermined", 34.574),
+  Ct1 = c(28.678, 29.414, 31.776, 33.241, "Undet."),
+  Ct2 = c(28.708, 29.620, 31.416, 32.653, "Undet."),
+  Ct3 = c(29.155, 29.264, 32.413, "Undet.", 34.574),
   `Avg Ct` = c(28.847, 29.433, 31.868, 32.947, 34.574),
   `Sample quan` = c(1, 0.5, 0.1, 0.05, 0.005),
-  `Log \n(sample quan)` = c(0, -0.301, -1, -1.301, -2.301),
+  `Log(sample quan)` = c(0, -0.301, -1, -1.301, -2.301),
   `Slope` = c(-2.6104, NA, NA, NA, NA),
-  `Primer Efficiency (%)` = c(141.5901, NA, NA, NA, NA))  
+  `PE (%)` = c(141.5901, NA, NA, NA, NA))  
 
 table_data2[is.na(table_data2)] <- ""
 
@@ -278,7 +278,7 @@ table_data3 %>% gt() %>% tab_source_note(
 
 ### Dilution Series
 
-From our dilution series we saw that as the dilution increases, Ct values rises, indicating that the cDNA concentration decreases which is to be expected in a properly diluted sample series [@svec2015]. However, Ct values are slightly inconsistent for higher dilutions, indicated with “Undetermined” in @tbl-x. This suggests potential variability in detecting low cDNA amounts. Furthermore, we calculated the slope of the standard curve by plotting the logarithm of template concentration against the Ct values and got a slope of -2.6104. The theoretical ideal slope is -3.33 which corresponds to 100% primer efficiency [@svec2015]. This further complicated our calculated primer efficiency as 141.59% is far above the acceptable range of 90-110% [@svec2015]. Our findings indicate issues within our experiment, suggesting that the primer did not efficiently amplify the target during each PCR cycle as intended. This may have skewed the relative quantification of gene expression and lead to false interpretation of our results.
+From our dilution series we saw that as the dilution increases, Ct values rises, indicating that the cDNA concentration decreases which is to be expected in a properly diluted sample series [@svec2015]. However, Ct values are slightly inconsistent for higher dilutions, indicated with “Undet.” in @tbl-x. This suggests potential variability in detecting low cDNA amounts. Furthermore, we calculated the slope of the standard curve by plotting the logarithm of template concentration against the Ct values and got a slope of -2.6104. The theoretical ideal slope is -3.33 which corresponds to 100% primer efficiency [@svec2015]. This further complicated our calculated primer efficiency as 141.59% is far above the acceptable range of 90-110% [@svec2015]. Our findings indicate issues within our experiment, suggesting that the primer did not efficiently amplify the target during each PCR cycle as intended. This may have skewed the relative quantification of gene expression and lead to false interpretation of our results.
 
 The results shown in @tbl-x1 highlight important aspects of reproducibility and variability at different sample dilutions. As expected, the average Ct values increase with dilution since lower concentrations require more cycles to reach the detection threshold [@Livak]. The standard deviation (SD) values are increasing as the sample is diluted. This indicates that as the template concentration decreases, the variability in the amplification increases. Lastly*,* the coefficient of variation (CV) is relatively low for the undiluted sample and for the ½ dilution, reflecting minimal variability and high precision in these concentrations. However, the CV value rises for the 1/10 dilution, suggesting increased variability in the measurements as the sample becomes more diluted. The increased SD and CV values at higher dilutions could be indicative of challenges such as pipetting errors or reduced efficiency in template detection.
 
