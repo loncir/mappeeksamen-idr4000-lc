@@ -244,13 +244,13 @@ ggplot(leanmass_summary, aes(x = sets, y = mean_change, fill = sex)) +
     x = "Sets",
     y = "Mean Change in Lean Body Mass (g)",
     fill = "Sex",
-    caption = "Multiple sets give a higher average increase in lean mass gains compared to a single set in both female and male participants. \nThe black lines represent the standard error of the mean (SE) for each condition (singe and multiple sets) and for each sex \n(male and female), indicating the variability of the mean change values. "
+    caption = "Multiple sets give a higher average increase in lean mass gains compared to a single set in both female and male \nparticipants. The black lines represent the standard error of the mean (SE) for each condition (single and \nmultiple sets) and for each sex (male and female), indicating the variability of the mean change values. "
   ) +
   theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5),
     legend.position = "top",
-    plot.caption = element_text(hjust = 0, size = 8, face = "italic") # Adjusts caption alignment, size, and style
+    plot.caption = element_text(hjust = 0, size = 7, face = "italic")
   )
  
 
@@ -408,13 +408,13 @@ ggplot(strength_summary, aes(x = sets, y = mean_change, fill = sex)) +
     x = "Sets",
     y = "Mean Change in Strength (kg)",
     fill = "Sex",
-    caption = "Multiple sets give a higher average increase in maximal strength compared to a single set in both female and male participants. \nThe black lines represent the standard error of the mean (SE) for each condition (singe and multiple sets) and for each sex (male \nand female), indicating the variability of the mean change values."
+    caption = "Multiple sets give a higher average increase in maximal strength compared to a single set in both female and male \nparticipants. The black lines represent the standard error of the mean (SE) for each condition (single and \nmultiple sets) and for each sex (male and female), indicating the variability of the mean change values."
   ) +
   theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5),
     legend.position = "top",
-    plot.caption = element_text(hjust = 0, size = 8, face = "italic"))
+    plot.caption = element_text(hjust = 0, size = 7, face = "italic"))
 
 ```
 

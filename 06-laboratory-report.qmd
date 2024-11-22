@@ -206,7 +206,7 @@ ggplot(data, aes(x = Avg_Ct, y = Log_sample_quan, color = Fortynning)) +
   theme(legend.title = element_blank(), 
     plot.title = element_text(hjust = 0.5),
     legend.position = "top",
-    plot.caption = element_text(hjust = 0, size = 8, face = "italic"))
+    plot.caption = element_text(hjust = 0, size = 7, face = "italic"))
 
 
 ```

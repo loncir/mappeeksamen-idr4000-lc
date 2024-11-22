@@ -52,7 +52,7 @@ cyclingstudy %>%
   geom_line(lty = 2) +
   geom_point(shape = 23, fill = "pink", size = 3) +
   labs(caption = "The relationship between workload (measured in watts) and lactate concentration for subject 3 \nat the pre-exercise time point. Each point on the graph represents lactate concentration \nmeasured at a specific workload. The dashed line connects the points for subject 3, indicating \nthe trend in lactate response as workload increases. A positive correlation is seen, where \nlactate levels increase with higher workloads. ") +
-  theme(plot.caption = element_text(hjust = 0, size = 10, face = "italic")) 
+  theme(plot.caption = element_text(hjust = 0, size = 8, face = "italic")) 
 ```
 
 ```{r}
@@ -83,7 +83,7 @@ cyclingstudy %>%
   geom_hline(yintercept = 4, color = "blue") +
   geom_vline(xintercept = 312, color = "blue") +
   labs(caption = "The value of x (watt) when y (lactate) is set to 2 and 4. The light blue lines is the approximate lactate \nthreshold for 2 mmol L-1. The dark blue lines is the approximate lactate threshold for 4 mmol L-1.") +
-  theme(plot.caption = element_text(hjust = 0, size = 10, face = "italic"))
+  theme(plot.caption = element_text(hjust = 0, size = 8, face = "italic"))
 ```
 
 ```{r}
@@ -109,8 +109,8 @@ cyclingstudy %>%
   geom_vline(xintercept = 270.8, color = "deepskyblue") + 
   geom_hline(yintercept = 4, color = "blue") +
   geom_vline(xintercept = 313.2, color = "blue") +
-  labs(caption = "The grey line represents the linear relationship between exercise intensity (watt) and blood lactate. \nOrange is a second degree polynomial model. Green is a third degree polynomial model. Pink is a fourth \ndegree polynomial model") + 
-  theme(plot.caption = element_text(hjust = 0, size = 10, face = "italic")) + 
+  labs(caption = "The grey line represents the linear relationship between exercise intensity (watt) and blood lactate. \nOrange is a second degree polynomial model. Green is a third degree polynomial model. Pink is a \nfourth degree polynomial model") + 
+  theme(plot.caption = element_text(hjust = 0, size = 8, face = "italic")) + 
   geom_smooth(method = "lm", se = FALSE, formula = y ~ x, color = "azure4") +
   geom_smooth(method = "lm", se = FALSE, formula = y ~ poly(x, 2), color = "orange") +
   geom_smooth(method = "lm", se = FALSE, formula = y ~ poly(x, 3), color = "#4daf4a") +
@@ -155,8 +155,8 @@ lactate %>%
                names_transform = list(residual = as.numeric),
                cols = resid.m1:resid.m4) %>%  
   ggplot(aes(watt, residual, fill = model)) + geom_point(shape = 21, size = 3) +
-  labs(caption = "The fourth-degree polynomial model (m4) finds the observed values best as the points are scattered \naround zero. The third-degree model (m3) is the next best fit.") +
-  theme(plot.caption = element_text(hjust = 0, size = 10, face = "italic")) +
+  labs(caption = "The fourth-degree polynomial model (m4) finds the observed values best as the points are \nscattered around zero. The third-degree model (m3) is the next best fit.") +
+  theme(plot.caption = element_text(hjust = 0, size = 8, face = "italic")) +
   scale_fill_manual(values = c("azure4", "orange", "#4daf4a", "deeppink"))
 
 ```
